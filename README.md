@@ -27,7 +27,7 @@ This library is a modified version of [Dermot Duffy](https://github.com/dermotdu
 - **Current LED colors** - Get the current colors being sent to LEDs
 - **Performance benchmarking** - Run performance benchmarks
 - **Config management** - Save/load configuration database
-
+-
 ## Installation
 
 ```bash
