@@ -851,16 +851,18 @@ class HyperHDRClient:
             assert asyncio.current_task() != hyperhdr_client._receive_task
 
             tan = await hyperhdr_client._reserve_tan_slot(kwargs.get(const.KEY_TAN))
-            data = hyperhdr_client._set_data(kwargs, hard={const.KEY_TAN: tan})
-            timeout_secs = self._extract_timeout_secs(hyperhdr_client, data)
+            try:
+                data = hyperhdr_client._set_data(kwargs, hard={const.KEY_TAN: tan})
+                timeout_secs = self._extract_timeout_secs(hyperhdr_client, data)
 
-            response = None
-            if await self._coro(hyperhdr_client, *args, **data):
-                response = await hyperhdr_client._wait_for_tan_response(
-                    tan, timeout_secs
-                )
-            await hyperhdr_client._remove_tan_slot(tan)
-            return response
+                response = None
+                if await self._coro(hyperhdr_client, *args, **data):
+                    response = await hyperhdr_client._wait_for_tan_response(
+                        tan, timeout_secs
+                    )
+                return response
+            finally:
+                await hyperhdr_client._remove_tan_slot(tan)
 
         def __get__(
             self, instance: HyperHDRClient, instancetype: type[HyperHDRClient]
@@ -1579,9 +1581,13 @@ class HyperHDRClient:
         """Set HDR tone mapping enabled/disabled.
 
         Parameters:
-            enable: bool - Enable or disable HDR tone mapping
+            enable: bool - Enable or disable HDR tone mapping (required)
         """
-        enable = kwargs.pop("enable", True)
+        if "enable" not in kwargs:
+            raise ValueError(
+                "The 'enable' parameter is required for async_send_set_hdr_tone_mapping"
+            )
+        enable = kwargs.pop("enable")
         data = HyperHDRClient._set_data(
             kwargs,
             hard={
