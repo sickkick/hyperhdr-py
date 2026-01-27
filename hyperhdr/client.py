@@ -1556,13 +1556,17 @@ class HyperHDRClient:
         Parameters:
             hdrToneMappingMode: int - HDR mode (0=off, 1=on, 2=auto)
         """
+        mode = kwargs.pop(const.KEY_HDR_TONE_MAPPING_MODE, None)
+        componentstate = {
+            const.KEY_COMPONENT: const.KEY_COMPONENTID_HDR,
+        }
+        if mode is not None:
+            componentstate[const.KEY_HDR_TONE_MAPPING_MODE] = mode
         data = HyperHDRClient._set_data(
             kwargs,
             hard={
                 const.KEY_COMMAND: const.KEY_COMPONENTSTATE,
-                const.KEY_COMPONENTSTATE: {
-                    const.KEY_COMPONENT: const.KEY_COMPONENTID_HDR,
-                },
+                const.KEY_COMPONENTSTATE: componentstate,
             },
         )
         return await self._async_send_json(data)
