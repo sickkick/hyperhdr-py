@@ -1,18 +1,24 @@
 [tool.poetry]
 name = "hyperhdr-py"
-version = "0.0.3"
+version = "0.1.0"
 description = "HyperHDR Ambient Lighting Python Package"
 authors = ["mjoshd <mjoshd@live.com>"]
 classifiers = [
     "Intended Audience :: Developers",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Topic :: Home Automation",
 ]
 keywords = [
     "hyperhdr",
+    "ambient-lighting",
+    "led",
+    "hdr",
 ]
 license = "MIT"
 repository = "https://github.com/mjoshd/hyperhdr-py"
@@ -23,16 +29,15 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.8 | ^3.9"
+python = "^3.9"
 
 [tool.poetry.dev-dependencies]
-pytest = "^7.0"
-pytest-cov = "^3.0.0"
-pytest-aiohttp = "^0.3.0"
-codecov = "^2.1.12"
-pytest-timeout = "^2.1.0"
-coverage = "^6.3"
-pytest-asyncio = "^0.18.2"
+pytest = "^8.0"
+pytest-cov = "^4.0.0"
+pytest-aiohttp = "^1.0.0"
+pytest-timeout = "^2.2.0"
+coverage = "^7.0"
+pytest-asyncio = "^0.23.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

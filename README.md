@@ -1,17 +1,8 @@
-# This library is a modified version of [Dermot Duffy](https://github.com/dermotduffy)'s excellent [hyperion-py](https://github.com/dermotduffy/hyperion-py)
+# hyperhdr-py
 
-<!-- [![PyPi](https://img.shields.io/pypi/v/hyperhdr-py.svg?style=flat-square)](https://pypi.org/project/hyperhdr-py/)
-[![PyPi](https://img.shields.io/pypi/pyversions/hyperhdr-py.svg?style=flat-square)](https://pypi.org/project/hyperhdr-py/)
-[![Build Status](https://img.shields.io/github/workflow/status/dermotduffy/hyperhdr-py/Build?style=flat-square)](https://github.com/dermotduffy/hyperhdr-py/actions/workflows/build.yaml)
-[![Test Coverage](https://img.shields.io/codecov/c/gh/dermotduffy/hyperhdr-py?style=flat-square)](https://codecov.io/gh/dermotduffy/hyperhdr-py)
-[![License](https://img.shields.io/github/license/dermotduffy/hyperhdr-py.svg?style=flat-square)](LICENSE)
-[![BuyMeCoffee](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg?style=flat-square)](https://www.buymeacoffee.com/dermotdu) -->
+A Python library for controlling [HyperHDR](https://github.com/awawa-dev/HyperHDR) ambient lighting systems.
 
-## Thank you dermotduffy! This literally would not exist without you 🎉
-
-### I am not a Python developer so you may run into something that doesn't work quite right. I've tested this on my own setup and it works well. If you do run into any problems, I'm sorry 🙁
-
-## Feel free to open an issue and/or help if you know Python 😀
+This library is a modified version of [Dermot Duffy](https://github.com/dermotduffy)'s excellent [hyperion-py](https://github.com/dermotduffy/hyperion-py).
 
 <img src="https://github.com/mjoshd/hyperhdr-py/blob/main/images/hyperhdrlogo.png?raw=true"
      alt="HyperHDR logo"
@@ -19,9 +10,58 @@
      align="left"
      style="float: left;" />
 
-## Library
+## Features
 
-Python library for [HyperHDR](https://github.com/awawa-dev/HyperHDR).
+- Full async support with `asyncio`
+- Connect to HyperHDR JSON API
+- Control colors, effects, components, and more
+- Subscribe to real-time state updates
+- Support for HyperHDR v19 through v22+
+
+### New in v0.1.0 (HyperHDR v20-v22 support)
+
+- **Average color calculation** - Get the average color of current LED output
+- **Smoothing control** - Dynamically adjust smoothing parameters including new v22 interpolators
+- **HDR tone mapping** - Control HDR tone mapping mode including automatic detection (v21+)
+- **Service discovery** - Discover HyperHDR services on the network
+- **Current LED colors** - Get the current colors being sent to LEDs
+- **Performance benchmarking** - Run performance benchmarks
+- **Config management** - Save/load configuration database
+
+## Installation
+
+```bash
+pip install hyperhdr-py
+```
+
+## Quick Start
+
+```python
+import asyncio
+from hyperhdr import client, const
+
+async def main():
+    async with client.HyperHDRClient("hyperhdr.local") as hc:
+        if hc:
+            # Get brightness
+            adjustment = hc.adjustment
+            if adjustment:
+                print(f"Brightness: {adjustment[0][const.KEY_BRIGHTNESS]}%")
+
+            # Set a color
+            await hc.async_set_color(color=[255, 0, 0], priority=50)
+
+            # Set an effect
+            await hc.async_set_effect(effect={"name": "Rainbow swirl"}, priority=50)
+
+asyncio.run(main())
+```
+
+## Thank you dermotduffy!
+
+This library would not exist without the excellent work on [hyperion-py](https://github.com/dermotduffy/hyperion-py).
+
+Feel free to open an issue if you run into any problems!
 
 <!-- [HyperHDR](https://github.com/awawa-dev/HyperHDR). See [JSON
 API](https://docs.hyperhdr-project.org/en/json/) for more details about the

@@ -1498,6 +1498,169 @@ class HyperHDRClient:
             return str(sysinfo_version)
         return None
 
+    # ==================================================================================
+    # ** Average Color (v20+) **
+    # Calculate the average color of the current LED output.
+    # ==================================================================================
+
+    async def async_send_get_average_color(self, *_: Any, **kwargs: Any) -> bool:
+        """Request the average color of current LED output."""
+        data = HyperHDRClient._set_data(
+            kwargs, hard={const.KEY_COMMAND: const.KEY_AVERAGE_COLOR}
+        )
+        return await self._async_send_json(data)
+
+    async_get_average_color = AwaitResponseWrapper(async_send_get_average_color)
+
+    # ==================================================================================
+    # ** Smoothing Control (v20+) **
+    # Update smoothing parameters dynamically.
+    # ==================================================================================
+
+    @property
+    def smoothing(self) -> dict[str, Any] | None:
+        """Return smoothing settings."""
+        return self._get_serverinfo_value(const.KEY_SMOOTHING)
+
+    async def async_send_set_smoothing(self, *_: Any, **kwargs: Any) -> bool:
+        """Set smoothing parameters.
+
+        Parameters:
+            smoothingType: str - Type of smoothing interpolator
+                           (linear, exponential, yuv, hybridRgb, inertia)
+            time: int - Smoothing time in milliseconds
+            updateFrequency: int - Update frequency in Hz
+            decay: float - Decay value for inertia smoothing
+            continuousOutput: bool - Enable continuous LED output
+        """
+        data = HyperHDRClient._set_data(
+            kwargs, hard={const.KEY_COMMAND: const.KEY_SMOOTHING}
+        )
+        return await self._async_send_json(data)
+
+    async_set_smoothing = AwaitResponseWrapper(async_send_set_smoothing)
+
+    # ==================================================================================
+    # ** HDR Tone Mapping Control (v21+) **
+    # Control HDR tone mapping mode including automatic detection.
+    # ==================================================================================
+
+    @property
+    def hdr_mode(self) -> int | None:
+        """Return current HDR tone mapping mode (0=off, 1=on, 2=auto)."""
+        return self._get_serverinfo_value(const.KEY_HDR_TONE_MAPPING_MODE)
+
+    async def async_send_set_hdr_mode(self, *_: Any, **kwargs: Any) -> bool:
+        """Set HDR tone mapping mode.
+
+        Parameters:
+            hdrToneMappingMode: int - HDR mode (0=off, 1=on, 2=auto)
+        """
+        data = HyperHDRClient._set_data(
+            kwargs,
+            hard={
+                const.KEY_COMMAND: const.KEY_COMPONENTSTATE,
+                const.KEY_COMPONENTSTATE: {
+                    const.KEY_COMPONENT: const.KEY_COMPONENTID_HDR,
+                },
+            },
+        )
+        return await self._async_send_json(data)
+
+    async_set_hdr_mode = AwaitResponseWrapper(async_send_set_hdr_mode)
+
+    async def async_send_set_hdr_tone_mapping(
+        self, *_: Any, **kwargs: Any
+    ) -> bool:
+        """Set HDR tone mapping enabled/disabled.
+
+        Parameters:
+            enable: bool - Enable or disable HDR tone mapping
+        """
+        enable = kwargs.pop("enable", True)
+        data = HyperHDRClient._set_data(
+            kwargs,
+            hard={
+                const.KEY_COMMAND: const.KEY_COMPONENTSTATE,
+                const.KEY_COMPONENTSTATE: {
+                    const.KEY_COMPONENT: const.KEY_COMPONENTID_HDR,
+                    const.KEY_STATE: enable,
+                },
+            },
+        )
+        return await self._async_send_json(data)
+
+    async_set_hdr_tone_mapping = AwaitResponseWrapper(async_send_set_hdr_tone_mapping)
+
+    # ==================================================================================
+    # ** Config/Database Operations (v20+) **
+    # Save and load configuration database.
+    # ==================================================================================
+
+    async def async_send_save_config(self, *_: Any, **kwargs: Any) -> bool:
+        """Request to save the current configuration to database."""
+        data = HyperHDRClient._set_data(
+            kwargs, hard={const.KEY_COMMAND: const.KEY_SAVE_DB}
+        )
+        return await self._async_send_json(data)
+
+    async_save_config = AwaitResponseWrapper(async_send_save_config)
+
+    async def async_send_load_config(self, *_: Any, **kwargs: Any) -> bool:
+        """Request to reload configuration from database."""
+        data = HyperHDRClient._set_data(
+            kwargs, hard={const.KEY_COMMAND: const.KEY_LOAD_DB}
+        )
+        return await self._async_send_json(data)
+
+    async_load_config = AwaitResponseWrapper(async_send_load_config)
+
+    # ==================================================================================
+    # ** Service Discovery (v20+) **
+    # Discover HyperHDR services and devices on the network.
+    # ==================================================================================
+
+    async def async_send_discover(self, *_: Any, **kwargs: Any) -> bool:
+        """Request service discovery."""
+        data = HyperHDRClient._set_data(
+            kwargs, hard={const.KEY_COMMAND: const.KEY_DISCOVER}
+        )
+        return await self._async_send_json(data)
+
+    async_discover = AwaitResponseWrapper(async_send_discover)
+
+    # ==================================================================================
+    # ** Current LED Colors (v20+) **
+    # Get the current colors being sent to LEDs.
+    # ==================================================================================
+
+    async def async_send_get_current_colors(self, *_: Any, **kwargs: Any) -> bool:
+        """Request the current LED colors."""
+        data = HyperHDRClient._set_data(
+            kwargs,
+            hard={
+                const.KEY_COMMAND: const.KEY_LEDCOLORS,
+                const.KEY_SUBCOMMAND: const.KEY_CURRENT_COLORS,
+            },
+        )
+        return await self._async_send_json(data)
+
+    async_get_current_colors = AwaitResponseWrapper(async_send_get_current_colors)
+
+    # ==================================================================================
+    # ** Performance / Benchmark (v20+) **
+    # Run performance benchmarks.
+    # ==================================================================================
+
+    async def async_send_benchmark(self, *_: Any, **kwargs: Any) -> bool:
+        """Request a performance benchmark."""
+        data = HyperHDRClient._set_data(
+            kwargs, hard={const.KEY_COMMAND: const.KEY_BENCHMARK}
+        )
+        return await self._async_send_json(data)
+
+    async_benchmark = AwaitResponseWrapper(async_send_benchmark)
+
 
 class ThreadedHyperHDRClient(threading.Thread):
     """HyperHDR Client that runs in a dedicated thread."""

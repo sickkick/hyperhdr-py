@@ -77,6 +77,67 @@ KEY_VIDEOMODE = "videomode"
 KEY_VISIBLE = "visible"
 KEY_VIDEOMODES = ["2D", "3DSBS", "3DTAB"]
 
+# New constants added in HyperHDR v20+
+KEY_SMOOTHING = "smoothing"
+KEY_SMOOTHING_TYPE = "smoothingType"
+KEY_SMOOTHING_TIME = "time"
+KEY_SMOOTHING_UPDATE_FREQUENCY = "updateFrequency"
+KEY_SMOOTHING_DECAY = "decay"
+KEY_SMOOTHING_CONTINUOUS_OUTPUT = "continuousOutput"
+
+# Average color calculation (v20)
+KEY_AVERAGE_COLOR = "calculate-colors"
+
+# HDR Tone Mapping (v21)
+KEY_HDR_TONE_MAPPING = "hdr"
+KEY_HDR_TONE_MAPPING_MODE = "hdrToneMappingMode"
+KEY_AUTO_TONE_MAPPING = "autoToneMapping"
+
+# Grabber control (v20+)
+KEY_GRABBER = "grabber"
+KEY_GRABBER_STATE = "grabberstate"
+KEY_SYSTEM_GRABBER = "systemGrabber"
+KEY_VIDEO_GRABBER = "videoGrabber"
+
+# LUT (Look-up table) related (v21)
+KEY_LUT = "lut"
+KEY_LUT_CALIBRATION = "lutCalibration"
+
+# WLED specific (v20)
+KEY_WLED = "wled"
+KEY_WLED_RESTORE_STATE = "restoreState"
+KEY_WLED_MAX_BRIGHTNESS = "maxBrightness"
+
+# Performance related (v20+)
+KEY_PERFORMANCE = "performance"
+KEY_BENCHMARK = "benchmark"
+
+# Config/Settings (v20+)
+KEY_CONFIG = "config"
+KEY_SAVE_DB = "saveDB"
+KEY_LOAD_DB = "loadDB"
+
+# Service discovery (v20)
+KEY_DISCOVER = "discover"
+KEY_SERVICES = "services"
+
+# Current LED colors (v20)
+KEY_CURRENT_COLORS = "currentColors"
+
+# Infinite Color Engine (v22)
+KEY_COLOR_ENGINE = "colorEngine"
+KEY_DEEP_COLOR = "deepColor"
+KEY_LINEAR_SRGB = "linearSrgb"
+KEY_COLOR_PRECISION = "colorPrecision"
+
+# Smoothing interpolators (v22)
+KEY_INTERPOLATOR = "interpolator"
+KEY_INTERPOLATOR_LINEAR = "linear"
+KEY_INTERPOLATOR_EXPONENTIAL = "exponential"
+KEY_INTERPOLATOR_YUV = "yuv"
+KEY_INTERPOLATOR_HYBRID_RGB = "hybridRgb"
+KEY_INTERPOLATOR_INERTIA = "inertia"
+
 # ComponentIDs from:
 # https://docs.hyperhdr-project.org/en/json/Control.html#components-ids-explained
 KEY_COMPONENTID = "componentId"
@@ -92,11 +153,15 @@ KEY_COMPONENTID_SYSTEMGRABBER = "SYSTEMGRABBER"
 KEY_COMPONENTID_LEDDEVICE = "LEDDEVICE"
 KEY_COMPONENTID_VIDEOGRABBER = "VIDEOGRABBER"
 KEY_COMPONENTID_HDR = "HDR"
+KEY_COMPONENTID_FLATBUFFERS = "FLATBUFSERVER"
+KEY_COMPONENTID_PROTOSERVER = "PROTOSERVER"
 
 KEY_COMPONENTID_EXTERNAL_SOURCES = [
     KEY_COMPONENTID_BOBLIGHTSERVER,
     KEY_COMPONENTID_SYSTEMGRABBER,
     KEY_COMPONENTID_VIDEOGRABBER,
+    KEY_COMPONENTID_FLATBUFFERS,
+    KEY_COMPONENTID_PROTOSERVER,
 ]
 
 # Maps between HyperHDR API component names to HyperHDR UI names.
@@ -110,10 +175,24 @@ KEY_COMPONENTID_TO_NAME = {
     KEY_COMPONENTID_LEDDEVICE: "LED Device",
     KEY_COMPONENTID_VIDEOGRABBER: "USB Capture",
     KEY_COMPONENTID_HDR: "HDR Tone Mapping",
+    KEY_COMPONENTID_FLATBUFFERS: "Flatbuffers Server",
+    KEY_COMPONENTID_PROTOSERVER: "Protocol Buffers Server",
 }
 KEY_COMPONENTID_FROM_NAME = {
     name: component for component, name in KEY_COMPONENTID_TO_NAME.items()
 }
+
+# HDR Tone Mapping Modes (v21+)
+HDR_MODE_OFF = 0
+HDR_MODE_ON = 1
+HDR_MODE_AUTO = 2  # Automatic tone mapping (v21)
+
+# Smoothing Types (v22+)
+SMOOTHING_TYPE_LINEAR = "linear"
+SMOOTHING_TYPE_EXPONENTIAL = "exponential"
+SMOOTHING_TYPE_YUV = "yuv"
+SMOOTHING_TYPE_HYBRID_RGB = "hybridRgb"
+SMOOTHING_TYPE_INERTIA = "inertia"
 
 DEFAULT_INSTANCE = 0
 DEFAULT_CONNECTION_RETRY_DELAY_SECS = 30
