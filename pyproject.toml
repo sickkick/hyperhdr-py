@@ -1,8 +1,8 @@
 [tool.poetry]
-name = "hyperhdr-py"
+name = "hyperhdr-py-sickkick"
 version = "0.1.0"
 description = "HyperHDR Ambient Lighting Python Package"
-authors = ["mjoshd <mjoshd@live.com>"]
+authors = ["sickkick <sickkick40@gmail.com"]
 classifiers = [
     "Intended Audience :: Developers",
     "Programming Language :: Python :: 3.9",
@@ -21,7 +21,7 @@ keywords = [
     "hdr",
 ]
 license = "MIT"
-repository = "https://github.com/mjoshd/hyperhdr-py"
+repository = "https://github.com/sickkick/hyperhdr-py"
 include = ["hyperhdr/py.typed", "LICENSE"]
 readme = "README.md"
 packages = [

@@ -31,7 +31,7 @@ This library is a modified version of [Dermot Duffy](https://github.com/dermotdu
 ## Installation
 
 ```bash
-pip install hyperhdr-py
+pip install hyperhdr-py-sickkick
 ```
 
 ## Quick Start
