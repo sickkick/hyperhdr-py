@@ -3,6 +3,9 @@ name: Upload Python Package
 on:
   release:
     types: [published]
+  push:
+    tags:
+      - 'v*'
 
 permissions:
   contents: read
@@ -39,7 +42,6 @@ jobs:
 
     environment:
       name: pypi
-      # url: https://pypi.org/p/YOURPROJECT
 
     steps:
       - name: Retrieve release distributions
