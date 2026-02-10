@@ -1,8 +1,8 @@
 [tool.poetry]
-name = "hyperhdr-py"
+name = "hyperhdr-py-sickkick"
 version = "0.1.0"
 description = "HyperHDR Ambient Lighting Python Package"
-authors = ["mjoshd <mjoshd@live.com>"]
+authors = ["sickkick <sickkick40@gmail.com"]
 classifiers = [
     "Intended Audience :: Developers",
     "Programming Language :: Python :: 3.9",
@@ -21,7 +21,7 @@ keywords = [
     "hdr",
 ]
 license = "MIT"
-repository = "https://github.com/mjoshd/hyperhdr-py"
+repository = "https://github.com/sickkick/hyperhdr-py"
 include = ["hyperhdr/py.typed", "LICENSE"]
 readme = "README.md"
 packages = [
@@ -30,6 +30,8 @@ packages = [
 
 [tool.poetry.dependencies]
 python = "^3.9"
+aiohttp = { version = "^3.9", optional = true }
+Pillow = { version = "^10.0", optional = true }
 
 [tool.poetry.dev-dependencies]
 pytest = "^8.0"
@@ -38,6 +40,10 @@ pytest-aiohttp = "^1.0.0"
 pytest-timeout = "^2.2.0"
 coverage = "^7.0"
 pytest-asyncio = "^0.23.0"
+
+[tool.poetry.extras]
+stream = ["aiohttp"]
+stream-jpeg = ["aiohttp", "Pillow"]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

@@ -700,10 +700,24 @@ class HyperHDRClient:
         ):
             self._update_videomode(resp_json[const.KEY_DATA][const.KEY_VIDEOMODE])
         elif (
+            command == f"{const.KEY_VIDEOMODE_HDR}-{const.KEY_UPDATE}"
+            and const.KEY_VIDEOMODE_HDR in resp_json.get(const.KEY_DATA, {})
+        ):
+            self._update_videomodehdr(
+                resp_json[const.KEY_DATA][const.KEY_VIDEOMODE_HDR]
+            )
+        elif (
             command == f"{const.KEY_LEDS}-{const.KEY_UPDATE}"
             and const.KEY_LEDS in resp_json.get(const.KEY_DATA, {})
         ):
             self._update_leds(resp_json[const.KEY_DATA][const.KEY_LEDS])
+        elif (
+            command == f"{const.KEY_SMOOTHING}-{const.KEY_UPDATE}"
+            and const.KEY_SMOOTHING in resp_json.get(const.KEY_DATA, {})
+        ):
+            self._update_smoothing(
+                resp_json[const.KEY_DATA][const.KEY_SMOOTHING]
+            )
         elif command == f"{const.KEY_AUTHORIZE_LOGOUT}":
             await self.async_client_disconnect()
         elif ServerInfoResponseOK(resp_json):
@@ -894,6 +908,19 @@ class HyperHDRClient:
 
     async_is_auth_required = AwaitResponseWrapper(async_send_is_auth_required)
 
+    async def async_send_is_admin_required(self, *_: Any, **kwargs: Any) -> bool:
+        """Determine if admin authorization is required."""
+        data = HyperHDRClient._set_data(
+            kwargs,
+            hard={
+                const.KEY_COMMAND: const.KEY_AUTHORIZE,
+                const.KEY_SUBCOMMAND: const.KEY_ADMIN_REQUIRED,
+            },
+        )
+        return await self._async_send_json(data)
+
+    async_is_admin_required = AwaitResponseWrapper(async_send_is_admin_required)
+
     # =============================================================================
     # ** Login **
     # https://docs.hyperhdr-project.org/en/json/Authorization.html#login-with-token
@@ -969,6 +996,93 @@ class HyperHDRClient:
         return await self._async_send_json(data)
 
     async_request_token_abort = AwaitResponseWrapper(async_send_request_token_abort)
+
+    # =============================================================================
+    # ** Token Management (Admin) **
+    # https://docs.hyperhdr-project.org/en/json/Authorization.html
+    # =============================================================================
+
+    async def async_send_get_pending_token_requests(
+        self, *_: Any, **kwargs: Any
+    ) -> bool:
+        """Fetch pending token requests (admin required)."""
+        data = HyperHDRClient._set_data(
+            kwargs,
+            hard={
+                const.KEY_COMMAND: const.KEY_AUTHORIZE,
+                const.KEY_SUBCOMMAND: const.KEY_GET_PENDING_TOKEN_REQUESTS,
+            },
+        )
+        return await self._async_send_json(data)
+
+    async_get_pending_token_requests = AwaitResponseWrapper(
+        async_send_get_pending_token_requests
+    )
+
+    async def async_send_answer_request(self, *_: Any, **kwargs: Any) -> bool:
+        """Approve or deny a token request (admin required)."""
+        data = HyperHDRClient._set_data(
+            kwargs,
+            hard={
+                const.KEY_COMMAND: const.KEY_AUTHORIZE,
+                const.KEY_SUBCOMMAND: const.KEY_ANSWER_REQUEST,
+            },
+        )
+        return await self._async_send_json(data)
+
+    async_answer_request = AwaitResponseWrapper(async_send_answer_request)
+
+    async def async_send_create_token(self, *_: Any, **kwargs: Any) -> bool:
+        """Create a token directly (admin required)."""
+        data = HyperHDRClient._set_data(
+            kwargs,
+            hard={
+                const.KEY_COMMAND: const.KEY_AUTHORIZE,
+                const.KEY_SUBCOMMAND: const.KEY_CREATE_TOKEN,
+            },
+        )
+        return await self._async_send_json(data)
+
+    async_create_token = AwaitResponseWrapper(async_send_create_token)
+
+    async def async_send_get_token_list(self, *_: Any, **kwargs: Any) -> bool:
+        """Get token list (admin required)."""
+        data = HyperHDRClient._set_data(
+            kwargs,
+            hard={
+                const.KEY_COMMAND: const.KEY_AUTHORIZE,
+                const.KEY_SUBCOMMAND: const.KEY_GET_TOKEN_LIST,
+            },
+        )
+        return await self._async_send_json(data)
+
+    async_get_token_list = AwaitResponseWrapper(async_send_get_token_list)
+
+    async def async_send_rename_token(self, *_: Any, **kwargs: Any) -> bool:
+        """Rename a token (admin required)."""
+        data = HyperHDRClient._set_data(
+            kwargs,
+            hard={
+                const.KEY_COMMAND: const.KEY_AUTHORIZE,
+                const.KEY_SUBCOMMAND: const.KEY_RENAME_TOKEN,
+            },
+        )
+        return await self._async_send_json(data)
+
+    async_rename_token = AwaitResponseWrapper(async_send_rename_token)
+
+    async def async_send_delete_token(self, *_: Any, **kwargs: Any) -> bool:
+        """Delete a token (admin required)."""
+        data = HyperHDRClient._set_data(
+            kwargs,
+            hard={
+                const.KEY_COMMAND: const.KEY_AUTHORIZE,
+                const.KEY_SUBCOMMAND: const.KEY_DELETE_TOKEN,
+            },
+        )
+        return await self._async_send_json(data)
+
+    async_delete_token = AwaitResponseWrapper(async_send_delete_token)
 
     # ====================
     # || Data API calls ||
@@ -1423,7 +1537,9 @@ class HyperHDRClient:
                     f"{const.KEY_INSTANCE}-{const.KEY_UPDATE}",
                     f"{const.KEY_PRIORITIES}-{const.KEY_UPDATE}",
                     f"{const.KEY_SESSIONS}-{const.KEY_UPDATE}",
+                    f"{const.KEY_SMOOTHING}-{const.KEY_UPDATE}",
                     f"{const.KEY_VIDEOMODE}-{const.KEY_UPDATE}",
+                    f"{const.KEY_VIDEOMODE_HDR}-{const.KEY_UPDATE}",
                 ],
             },
         )
@@ -1447,6 +1563,11 @@ class HyperHDRClient:
         """Update videomode."""
         if self._serverinfo:
             self._serverinfo[const.KEY_VIDEOMODE] = videomode
+
+    def _update_videomodehdr(self, videomodehdr: int) -> None:
+        """Update HDR videomode setting."""
+        if self._serverinfo:
+            self._serverinfo[const.KEY_VIDEOMODE_HDR] = videomodehdr
 
     async def async_send_set_videomode(self, *_: Any, **kwargs: Any) -> bool:
         """Request the LED mapping type be set."""
@@ -1524,6 +1645,16 @@ class HyperHDRClient:
         """Return smoothing settings."""
         return self._get_serverinfo_value(const.KEY_SMOOTHING)
 
+    def _update_smoothing(self, smoothing: dict[str, Any]) -> None:
+        """Update smoothing settings."""
+        if self._serverinfo:
+            self._serverinfo[const.KEY_SMOOTHING] = smoothing
+
+    @property
+    def color_engine(self) -> dict[str, Any] | None:
+        """Return color engine settings."""
+        return self._get_serverinfo_value(const.KEY_COLOR_ENGINE)
+
     async def async_send_set_smoothing(self, *_: Any, **kwargs: Any) -> bool:
         """Set smoothing parameters.
 
@@ -1550,6 +1681,9 @@ class HyperHDRClient:
     @property
     def hdr_mode(self) -> int | None:
         """Return current HDR tone mapping mode (0=off, 1=on, 2=auto)."""
+        mode = self._get_serverinfo_value(const.KEY_VIDEOMODE_HDR)
+        if isinstance(mode, int):
+            return mode
         return self._get_serverinfo_value(const.KEY_HDR_TONE_MAPPING_MODE)
 
     async def async_send_set_hdr_mode(self, *_: Any, **kwargs: Any) -> bool:
@@ -1557,18 +1691,23 @@ class HyperHDRClient:
 
         Parameters:
             hdrToneMappingMode: int - HDR mode (0=off, 1=on, 2=auto)
+            videomodehdr: int - HDR mode (0=off, 1=on, 2=auto)
+            HDR: int - HDR mode (0=off, 1=on, 2=auto)
         """
         mode = kwargs.pop(const.KEY_HDR_TONE_MAPPING_MODE, None)
-        componentstate = {
-            const.KEY_COMPONENT: const.KEY_COMPONENTID_HDR,
-        }
-        if mode is not None:
-            componentstate[const.KEY_HDR_TONE_MAPPING_MODE] = mode
+        if mode is None:
+            mode = kwargs.pop(const.KEY_VIDEOMODE_HDR, None)
+        if mode is None:
+            mode = kwargs.pop(const.KEY_HDR, None)
+        if mode is None:
+            raise ValueError(
+                "HDR mode is required (hdrToneMappingMode, videomodehdr, or HDR)."
+            )
         data = HyperHDRClient._set_data(
             kwargs,
             hard={
-                const.KEY_COMMAND: const.KEY_COMPONENTSTATE,
-                const.KEY_COMPONENTSTATE: componentstate,
+                const.KEY_COMMAND: const.KEY_VIDEOMODE_HDR,
+                const.KEY_HDR: mode,
             },
         )
         return await self._async_send_json(data)
@@ -1591,16 +1730,31 @@ class HyperHDRClient:
         data = HyperHDRClient._set_data(
             kwargs,
             hard={
-                const.KEY_COMMAND: const.KEY_COMPONENTSTATE,
-                const.KEY_COMPONENTSTATE: {
-                    const.KEY_COMPONENT: const.KEY_COMPONENTID_HDR,
-                    const.KEY_STATE: enable,
-                },
+                const.KEY_COMMAND: const.KEY_VIDEOMODE_HDR,
+                const.KEY_HDR: 1 if enable else 0,
             },
         )
         return await self._async_send_json(data)
 
     async_set_hdr_tone_mapping = AwaitResponseWrapper(async_send_set_hdr_tone_mapping)
+
+    # ==================================================================================
+    # ** Config (v20+) **
+    # Fetch full configuration.
+    # ==================================================================================
+
+    async def async_send_get_config(self, *_: Any, **kwargs: Any) -> bool:
+        """Request the full configuration."""
+        data = HyperHDRClient._set_data(
+            kwargs,
+            hard={
+                const.KEY_COMMAND: const.KEY_CONFIG,
+                const.KEY_SUBCOMMAND: const.KEY_GET_CONFIG,
+            },
+        )
+        return await self._async_send_json(data)
+
+    async_get_config = AwaitResponseWrapper(async_send_get_config)
 
     # ==================================================================================
     # ** Config/Database Operations (v20+) **

@@ -17,6 +17,7 @@ This library is a modified version of [Dermot Duffy](https://github.com/dermotdu
 - Control colors, effects, components, and more
 - Subscribe to real-time state updates
 - Support for HyperHDR v19 through v22+
+- Websocket LED color/gradient streaming (optional; requires `aiohttp`)
 
 ### New in v0.1.0 (HyperHDR v20-v22 support)
 
@@ -31,7 +32,7 @@ This library is a modified version of [Dermot Duffy](https://github.com/dermotdu
 ## Installation
 
 ```bash
-pip install hyperhdr-py
+pip install hyperhdr-py-sickkick
 ```
 
 ## Quick Start
@@ -56,6 +57,53 @@ async def main():
 
 asyncio.run(main())
 ```
+
+## LED Streaming (WebSocket)
+
+Install dependencies before using the stream helpers:
+
+```bash
+pip install aiohttp
+```
+
+If you enable `convert_to_jpeg=True`, install Pillow as well:
+
+```bash
+pip install Pillow
+```
+
+Or install the optional extras:
+
+```bash
+pip install "hyperhdr-py-sickkick[stream]"
+```
+
+```bash
+pip install "hyperhdr-py-sickkick[stream-jpeg]"
+```
+
+```python
+import asyncio
+from hyperhdr.stream import HyperHDRLedColorsStream, HyperHDRLedGradientStream
+
+async def main():
+    led_colors = HyperHDRLedColorsStream("hyperhdr.local", token="YOUR_TOKEN")
+    await led_colors.start()
+    frame = await led_colors.wait_for_frame()
+    if frame and frame.raw:
+        print("LED bytes:", len(frame.raw))
+    await led_colors.stop()
+
+    led_gradient = HyperHDRLedGradientStream("hyperhdr.local")
+    async for frame in led_gradient.frames():
+        print("Gradient update:", frame.source)
+        break
+    await led_gradient.stop()
+
+asyncio.run(main())
+```
+
+See `examples/stream_leds.py` for a standalone script.
 
 ## Thank you dermotduffy!
 
