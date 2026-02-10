@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "hyperhdr-py-sickkick"
-version = "0.1.0"
+version = "0.2.0"
 description = "HyperHDR Ambient Lighting Python Package"
 authors = ["sickkick <sickkick40@gmail.com"]
 classifiers = [
